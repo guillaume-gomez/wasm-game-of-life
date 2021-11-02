@@ -1,4 +1,4 @@
-import { drawGrid, drawCells, universe, CELL_SIZE } from "./canvas";
+import { drawGrid, drawCells, universe, reset, CELL_SIZE } from "./canvas";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
@@ -36,6 +36,13 @@ playPauseButton.addEventListener("click", event => {
   }
 });
 
+const resetButton = document.getElementById("reset-null");
+resetButton.addEventListener("click", event => {
+  pause();
+  reset();
+  drawCells(ctx);
+})
+
 const renderLoop = () => {
   universe.tick();
   render();
@@ -65,6 +72,5 @@ canvas.addEventListener("click", event => {
   drawGrid(ctx);
   drawCells(ctx);
 });
-
 
 render();

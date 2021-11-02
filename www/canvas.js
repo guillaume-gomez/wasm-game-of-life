@@ -59,3 +59,7 @@ export const drawCells = (ctx) => {
 
   ctx.stroke();
 };
+
+export const reset = () => {
+  universe.clean_grid();
+}
