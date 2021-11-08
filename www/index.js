@@ -1,4 +1,4 @@
-import { drawGrid, drawCells, universe, reset, CELL_SIZE } from "./canvas";
+import { drawGrid, drawCells, universe, reset, resetUniverse, CELL_SIZE } from "./canvas";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
@@ -6,8 +6,8 @@ let animationId = null;
 // Give the canvas room for all of our cells and a 1px border
 // around each of them.
 const canvas = document.getElementById("game-of-life-canvas");
-canvas.height = (CELL_SIZE + 1) * universe.height() + 1;
-canvas.width = (CELL_SIZE + 1) * universe.width() + 1;
+canvas.height = (CELL_SIZE + 1) * universe().height() + 1;
+canvas.width = (CELL_SIZE + 1) * universe().width() + 1;
 const ctx = canvas.getContext('2d');
 
 
@@ -43,8 +43,16 @@ resetButton.addEventListener("click", event => {
   drawCells(ctx);
 })
 
+const resetRandomButton = document.getElementById("reset-random");
+resetRandomButton.addEventListener("click", event => {
+  pause();
+  resetUniverse();
+  play();
+  drawCells(ctx);
+})
+
 const renderLoop = () => {
-  universe.tick();
+  universe().tick();
   render();
 };
 
@@ -64,10 +72,10 @@ canvas.addEventListener("click", event => {
   const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
   const canvasTop = (event.clientY - boundingRect.top) * scaleY;
 
-  const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), universe.height() - 1);
-  const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), universe.width() - 1);
+  const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), universe().height() - 1);
+  const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), universe().width() - 1);
 
-  universe.toggle_cell(row, col);
+  universe().toggle_cell(row, col);
 
   drawGrid(ctx);
   drawCells(ctx);
