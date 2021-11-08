@@ -6,6 +6,8 @@ const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
 
+const COLORS = [ALIVE_COLOR, "#2094f3", "#009485", "#ff9900", "#ff5724", "#4506cb" ]
+
 let universeInstance = Universe.new(64,64);
 
 export function universe() {
@@ -39,10 +41,14 @@ const getIndex = (row, column) => {
   return row * width + column;
 };
 
+const randomColor = () => {
+  const value = Math.random() * COLORS.length;
+  return COLORS[Math.round(value)];
+}
+
 export const drawCells = (ctx) => { 
   const width = universe().width();
   const height = universe().height();
-  console.log(height)
 
   const cellsPtr = universe().cells();
   const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
@@ -55,7 +61,7 @@ export const drawCells = (ctx) => {
 
       ctx.fillStyle = cells[idx] === Cell.Dead
         ? DEAD_COLOR
-        : ALIVE_COLOR;
+        : randomColor();
 
       ctx.fillRect(
         col * (CELL_SIZE + 1) + 1,
@@ -73,6 +79,6 @@ export const reset = () => {
   universe().clean_grid();
 }
 
-export const resetUniverse = () => {
-  universeInstance = Universe.new(92,92);
+export const resetUniverse = (width, height) => {
+  universeInstance = Universe.new(width,height);
 }

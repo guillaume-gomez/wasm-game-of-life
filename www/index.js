@@ -6,13 +6,14 @@ let animationId = null;
 // Give the canvas room for all of our cells and a 1px border
 // around each of them.
 const canvas = document.getElementById("game-of-life-canvas");
-canvas.height = (CELL_SIZE + 1) * universe().height() + 1;
-canvas.width = (CELL_SIZE + 1) * universe().width() + 1;
 const ctx = canvas.getContext('2d');
 
+const resizeCanvas = () => {
+  canvas.height = (CELL_SIZE + 1) * universe().height() + 1;
+  canvas.width = (CELL_SIZE + 1) * universe().width() + 1;
+}
 
 const playPauseButton = document.getElementById("play-pause");
-
 const play = () => {
   playPauseButton.textContent = "⏸";
   renderLoop();
@@ -44,12 +45,36 @@ resetButton.addEventListener("click", event => {
   drawCells(ctx);
 })
 
+const widthRange = document.getElementById("width-range");
+widthRange.addEventListener("change", event => {
+  const span = document.getElementById("width-value");
+  span.innerText = event.target.value;
+
+  pause();
+  resetUniverse(event.target.value, universe().height());
+  resizeCanvas();
+  play();
+})
+
+const heightRange = document.getElementById("height-range");
+heightRange.addEventListener("change", event => {
+  const span = document.getElementById("height-value");
+  span.innerText = event.target.value;
+
+  pause();
+  resetUniverse(universe().width(), event.target.value);
+  resizeCanvas();
+  play();
+})
+
 const resetRandomButton = document.getElementById("reset-random");
 resetRandomButton.addEventListener("click", event => {
   pause();
-  resetUniverse();
+  const width = universe().width();
+  const height = universe().height();
+  resetUniverse(width, height);
+  resizeCanvas();
   play();
-  drawCells(ctx);
 })
 
 const renderLoop = () => {
@@ -82,4 +107,5 @@ canvas.addEventListener("click", event => {
   drawCells(ctx);
 });
 
+resizeCanvas();
 render();
