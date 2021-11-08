@@ -40,6 +40,7 @@ const resetButton = document.getElementById("reset-null");
 resetButton.addEventListener("click", event => {
   pause();
   reset();
+  play();
   drawCells(ctx);
 })
 

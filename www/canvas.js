@@ -6,10 +6,7 @@ const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
 
-let universeInstance = Universe.new();
-const width = universeInstance.width();
-const height = universeInstance.height();
-
+let universeInstance = Universe.new(64,64);
 
 export function universe() {
   return universeInstance;
@@ -19,6 +16,9 @@ export const drawGrid = (ctx) => {
   ctx.beginPath();
   ctx.strokeStyle = GRID_COLOR;
 
+
+  const width = universe().width();
+  const height = universe().height();
   // Vertical lines.
   for (let i = 0; i <= width; i++) {
     ctx.moveTo(i * (CELL_SIZE + 1) + 1, 0);
@@ -35,10 +35,15 @@ export const drawGrid = (ctx) => {
 };
 
 const getIndex = (row, column) => {
+  const width = universe().width();
   return row * width + column;
 };
 
-export const drawCells = (ctx) => {
+export const drawCells = (ctx) => { 
+  const width = universe().width();
+  const height = universe().height();
+  console.log(height)
+
   const cellsPtr = universe().cells();
   const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
 
@@ -65,9 +70,9 @@ export const drawCells = (ctx) => {
 };
 
 export const reset = () => {
-  universe.clean_grid();
+  universe().clean_grid();
 }
 
 export const resetUniverse = () => {
-  universeInstance = Universe.new();
+  universeInstance = Universe.new(92,92);
 }
