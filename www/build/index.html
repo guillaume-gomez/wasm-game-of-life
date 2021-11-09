@@ -25,13 +25,18 @@
         <div class="flex flex-col gap-5">
           <div>
             <span class="text-lg">Width</span>
-            <input type="range" max="200" value="64" class="range range-primary" id="width-range">
+            <input type="range" min="20" max="200" value="64" class="range range-primary" id="width-range">
             <span id="width-value">64</span>
           </div>
           <div>
             <span class="text-lg">Height</span>
-            <input type="range" max="200" value="64" class="range range-primary" id="height-range">
+            <input type="range" min="20" max="200" value="64" class="range range-primary" id="height-range">
             <span id="height-value">64</span>
+          </div>
+          <div>
+            <span class="text-lg">Cell size</span>
+            <input type="range" min="5" max="20" value="5" step="5" class="range range-primary" id="cell-size-range">
+            <span id="cell-size-value">5</span>
           </div>
           <div class="flex gap-5">
             <div>
@@ -44,14 +49,15 @@
           </div>
         </div>
       </div>
-      <div class="card bg-base-200 flex flex-col gap-4 items-center justify-center p-4 w-full lg:w-3/4">
+      <div class="card bg-base-200 flex flex-col gap-4 items-center justify-center p-4 w-full lg:w-3/4 overflow-auto">
         <canvas id="game-of-life-canvas"></canvas>
         <button class="btn btn-primary" id="play-pause">⏸</button>
+        <p class="text-xs">Draw on grid to fill cells</p>
       </div>
       <script src="./bootstrap.js"></script>
     </div>
 
-    <footer class="footer bg-base-200 text-base-content footer-center p-5 rounded-xl">
+    <footer class="footer bg-base-300 text-base-content footer-center p-5 rounded-xl">
       <div>
         <p> 2021 - Made By Guillaume Gomez</p>
         <a href="https://github.com/guillaume-gomez/wasm-game-of-life" className="text-xs">Did you enjoyed ? 😊 Star the project </a>
