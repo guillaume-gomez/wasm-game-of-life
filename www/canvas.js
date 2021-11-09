@@ -13,12 +13,13 @@ export default class CustomCanvas {
   constructor(canvasDomId) {
     this.cellSize = 5;
     this.canvas = document.getElementById(canvasDomId);
-    console.log(canvasDomId)
     this.ctx = this.canvas.getContext('2d');
 
     this.width = 64;
     this.height = 64;
     this.universe = Universe.new(this.width, this.height);
+
+    this.resizeCanvas();
   }
 
   getUniverse() {
@@ -80,15 +81,14 @@ export default class CustomCanvas {
     const cells = new Uint8Array(memory.buffer, cellsPtr, this.width * this.height);
 
     this.ctx.beginPath();
-
     for (let row = 0; row < this.height; row++) {
       for (let col = 0; col < this.width; col++) {
         const idx = this.getIndex(row, col);
+        if (cells[idx] !== Cell.Alive) {
+          continue;
+        }
 
-        this.ctx.fillStyle = cells[idx] === Cell.Dead
-          ? DEAD_COLOR
-          : this.randomColor();
-
+        this.ctx.fillStyle = this.randomColor();
         this.ctx.fillRect(
           col * (this.cellSize + 1) + 1,
           row * (this.cellSize + 1) + 1,
@@ -98,6 +98,23 @@ export default class CustomCanvas {
       }
     }
 
+    // Dead cells.
+    this.ctx.fillStyle = DEAD_COLOR;
+    for (let row = 0; row < this.height; row++) {
+      for (let col = 0; col < this.width; col++) {
+        const idx = this.getIndex(row, col);
+        if (cells[idx] !== Cell.Dead) {
+          continue;
+        }
+
+        this.ctx.fillRect(
+          col * (this.cellSize + 1) + 1,
+          row * (this.cellSize + 1) + 1,
+          this.cellSize,
+          this.cellSize
+        );
+      }
+    }
     this.ctx.stroke();
   }
 
