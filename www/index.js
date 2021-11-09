@@ -1,16 +1,18 @@
-import { drawGrid, drawCells, universe, reset, resetUniverse, CELL_SIZE } from "./canvas";
+import { drawGrid, drawCells, universe, reset, resetUniverse } from "./canvas";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
 let animationId = null;
+let cellSize = 5;
 // Give the canvas room for all of our cells and a 1px border
 // around each of them.
 const canvas = document.getElementById("game-of-life-canvas");
 const ctx = canvas.getContext('2d');
 
+
 const resizeCanvas = () => {
-  canvas.height = (CELL_SIZE + 1) * universe().height() + 1;
-  canvas.width = (CELL_SIZE + 1) * universe().width() + 1;
+  canvas.height = (cellSize + 1) * universe().height() + 1;
+  canvas.width = (cellSize + 1) * universe().width() + 1;
 }
 
 const playPauseButton = document.getElementById("play-pause");
@@ -42,7 +44,7 @@ resetButton.addEventListener("click", event => {
   pause();
   reset();
   play();
-  drawCells(ctx);
+  drawCells(ctx, cellSize);
 })
 
 const widthRange = document.getElementById("width-range");
@@ -67,6 +69,18 @@ heightRange.addEventListener("change", event => {
   play();
 })
 
+const cellSizeRange = document.getElementById("cell-size-range");
+cellSizeRange.addEventListener("change", event => {
+  const span = document.getElementById("cell-size-value");
+  span.innerText = event.target.value;
+
+  pause();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  cellSize = parseInt(event.target.value);
+  resizeCanvas();
+  play();
+})
+
 const resetRandomButton = document.getElementById("reset-random");
 resetRandomButton.addEventListener("click", event => {
   pause();
@@ -83,8 +97,8 @@ const renderLoop = () => {
 };
 
 const render = () => {
-  drawGrid(ctx);
-  drawCells(ctx);
+  drawGrid(ctx, cellSize);
+  drawCells(ctx, cellSize);
 
   animationId = requestAnimationFrame(renderLoop);
 }
@@ -98,13 +112,13 @@ canvas.addEventListener("click", event => {
   const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
   const canvasTop = (event.clientY - boundingRect.top) * scaleY;
 
-  const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), universe().height() - 1);
-  const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), universe().width() - 1);
+  const row = Math.min(Math.floor(canvasTop / (cellSize + 1)), universe().height() - 1);
+  const col = Math.min(Math.floor(canvasLeft / (cellSize + 1)), universe().width() - 1);
 
   universe().toggle_cell(row, col);
 
-  drawGrid(ctx);
-  drawCells(ctx);
+  drawGrid(ctx, cellSize);
+  drawCells(ctx, cellSize);
 });
 
 resizeCanvas();
