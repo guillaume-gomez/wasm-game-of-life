@@ -1,20 +1,11 @@
-import { drawGrid, drawCells, universe, reset, resetUniverse } from "./canvas";
+import CustomCanvas from "./canvas";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
 let animationId = null;
-let cellSize = 5;
-// Give the canvas room for all of our cells and a 1px border
-// around each of them.
-const canvas = document.getElementById("game-of-life-canvas");
-const ctx = canvas.getContext('2d');
 
-
-const resizeCanvas = () => {
-  canvas.height = (cellSize + 1) * universe().height() + 1;
-  canvas.width = (cellSize + 1) * universe().width() + 1;
-}
-
+let customCanvas = new CustomCanvas("game-of-life-canvas");
+console.log(customCanvas)
 const playPauseButton = document.getElementById("play-pause");
 const play = () => {
   playPauseButton.textContent = "⏸";
@@ -42,9 +33,8 @@ playPauseButton.addEventListener("click", event => {
 const resetButton = document.getElementById("reset-null");
 resetButton.addEventListener("click", event => {
   pause();
-  reset();
-  play();
-  drawCells(ctx, cellSize);
+  customCanvas.reset();
+  customCanvas.drawCells();
 })
 
 const widthRange = document.getElementById("width-range");
@@ -53,20 +43,18 @@ widthRange.addEventListener("change", event => {
   span.innerText = event.target.value;
 
   pause();
-  resetUniverse(event.target.value, universe().height());
-  resizeCanvas();
-  play();
+  customCanvas.resetUniverse(event.target.value, customCanvas.getHeight());
+  customCanvas.drawCells();
 })
 
 const heightRange = document.getElementById("height-range");
 heightRange.addEventListener("change", event => {
   const span = document.getElementById("height-value");
   span.innerText = event.target.value;
-
+  
   pause();
-  resetUniverse(universe().width(), event.target.value);
-  resizeCanvas();
-  play();
+  customCanvas.resetUniverse(customCanvas.getWidth(), event.target.value);
+  customCanvas.drawCells();
 })
 
 const cellSizeRange = document.getElementById("cell-size-range");
@@ -75,35 +63,35 @@ cellSizeRange.addEventListener("change", event => {
   span.innerText = event.target.value;
 
   pause();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  cellSize = parseInt(event.target.value);
-  resizeCanvas();
-  play();
+  customCanvas.setCellSize(parseInt(event.target.value));
+  customCanvas.resizeCanvas();
+  customCanvas.drawCells();
 })
 
 const resetRandomButton = document.getElementById("reset-random");
 resetRandomButton.addEventListener("click", event => {
   pause();
-  const width = universe().width();
-  const height = universe().height();
-  resetUniverse(width, height);
-  resizeCanvas();
-  play();
+  const width = customCanvas.getWidth();
+  const height = customCanvas.getHeight();
+  customCanvas.resetUniverse(width, height);
+  customCanvas.drawCells();
 })
 
 const renderLoop = () => {
-  universe().tick();
+  customCanvas.getUniverse().tick();
   render();
 };
 
 const render = () => {
-  drawGrid(ctx, cellSize);
-  drawCells(ctx, cellSize);
+  customCanvas.drawGrid();
+  customCanvas.drawCells();
 
   animationId = requestAnimationFrame(renderLoop);
 }
 
+let canvas = customCanvas.getCanvas();
 canvas.addEventListener("click", event => {
+  console.log("pnus")
   const boundingRect = canvas.getBoundingClientRect();
 
   const scaleX = canvas.width / boundingRect.width;
@@ -112,14 +100,13 @@ canvas.addEventListener("click", event => {
   const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
   const canvasTop = (event.clientY - boundingRect.top) * scaleY;
 
-  const row = Math.min(Math.floor(canvasTop / (cellSize + 1)), universe().height() - 1);
-  const col = Math.min(Math.floor(canvasLeft / (cellSize + 1)), universe().width() - 1);
+  const row = Math.min(Math.floor(canvasTop / (customCanvas.getCellSize() + 1)), customCanvas.getHeight() - 1);
+  const col = Math.min(Math.floor(canvasLeft / (customCanvas.getCellSize() + 1)), customCanvas.getWidth() - 1);
 
-  universe().toggle_cell(row, col);
+  customCanvas.toggleCell(row, col);
 
-  drawGrid(ctx, cellSize);
-  drawCells(ctx, cellSize);
+  customCanvas.drawGrid();
+  customCanvas.drawCells();
 });
 
-resizeCanvas();
 render();

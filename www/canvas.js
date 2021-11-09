@@ -9,75 +9,116 @@ const COLORS = [ALIVE_COLOR, "#2094f3", "#009485", "#ff9900", "#ff5724", "#4506c
 
 let universeInstance = Universe.new(64,64);
 
-export function universe() {
-  return universeInstance;
-}
+export default class CustomCanvas {
+  constructor(canvasDomId) {
+    this.cellSize = 5;
+    this.canvas = document.getElementById(canvasDomId);
+    console.log(canvasDomId)
+    this.ctx = this.canvas.getContext('2d');
 
-export const drawGrid = (ctx, cellSize) => {
-  ctx.beginPath();
-  ctx.strokeStyle = GRID_COLOR;
-
-
-  const width = universe().width();
-  const height = universe().height();
-  // Vertical lines.
-  for (let i = 0; i <= width; i++) {
-    ctx.moveTo(i * (cellSize + 1) + 1, 0);
-    ctx.lineTo(i * (cellSize + 1) + 1, (cellSize + 1) * height + 1);
+    this.width = 64;
+    this.height = 64;
+    this.universe = Universe.new(this.width, this.height);
   }
 
-  // Horizontal lines.
-  for (let j = 0; j <= height; j++) {
-    ctx.moveTo(0,                           j * (cellSize + 1) + 1);
-    ctx.lineTo((cellSize + 1) * width + 1, j * (cellSize + 1) + 1);
+  getUniverse() {
+    return this.universe;
   }
 
-  ctx.stroke();
-};
+  getWidth() {
+    return this.width;
+  }
 
-const getIndex = (row, column) => {
-  const width = universe().width();
-  return row * width + column;
-};
+  getHeight() {
+    return this.height;
+  }
 
-const randomColor = () => {
-  const value = Math.random() * COLORS.length;
-  return COLORS[Math.round(value)];
-}
+  getCellSize() {
+    return this.cellSize;
+  }
 
-export const drawCells = (ctx, cellSize) => { 
-  const width = universe().width();
-  const height = universe().height();
+  setCellSize(cellSize) {
+    this.cellSize = cellSize;
+  }
 
-  const cellsPtr = universe().cells();
-  const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
+  getIndex(row, column) {
+    return row * this.width + column;
+  }
 
-  ctx.beginPath();
+  getCanvas() {
+    return this.canvas;
+  }
 
-  for (let row = 0; row < height; row++) {
-    for (let col = 0; col < width; col++) {
-      const idx = getIndex(row, col);
+  randomColor() {
+    const value = Math.random() * COLORS.length;
+    return COLORS[Math.round(value)];
+  }
 
-      ctx.fillStyle = cells[idx] === Cell.Dead
-        ? DEAD_COLOR
-        : randomColor();
+  drawGrid() {
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = GRID_COLOR;
 
-      ctx.fillRect(
-        col * (cellSize + 1) + 1,
-        row * (cellSize + 1) + 1,
-        cellSize,
-        cellSize
-      );
+    const width = this.width;
+    const height = this.height;
+    // Vertical lines.
+    for (let i = 0; i <= this.width; i++) {
+      this.ctx.moveTo(i * (this.cellSize + 1) + 1, 0);
+      this.ctx.lineTo(i * (this.cellSize + 1) + 1, (this.cellSize + 1) * this.height + 1);
     }
+
+    // Horizontal lines.
+    for (let j = 0; j <= this.height; j++) {
+      this.ctx.moveTo(0,                           j * (this.cellSize + 1) + 1);
+      this.ctx.lineTo((this.cellSize + 1) * this.width + 1, j * (this.cellSize + 1) + 1);
+    }
+
+    this.ctx.stroke();
   }
 
-  ctx.stroke();
-};
+  drawCells() { 
+    const cellsPtr = this.universe.cells();
+    const cells = new Uint8Array(memory.buffer, cellsPtr, this.width * this.height);
 
-export const reset = () => {
-  universe().clean_grid();
-}
+    this.ctx.beginPath();
 
-export const resetUniverse = (width, height) => {
-  universeInstance = Universe.new(width,height);
+    for (let row = 0; row < this.height; row++) {
+      for (let col = 0; col < this.width; col++) {
+        const idx = this.getIndex(row, col);
+
+        this.ctx.fillStyle = cells[idx] === Cell.Dead
+          ? DEAD_COLOR
+          : this.randomColor();
+
+        this.ctx.fillRect(
+          col * (this.cellSize + 1) + 1,
+          row * (this.cellSize + 1) + 1,
+          this.cellSize,
+          this.cellSize
+        );
+      }
+    }
+
+    this.ctx.stroke();
+  }
+
+  toggleCell(row, col) {
+    this.universe.toggle_cell(row, col);
+  }
+
+  resizeCanvas() {
+    this.canvas.height = (this.cellSize + 1) * this.height + 1;
+    this.canvas.width = (this.cellSize + 1) * this.width + 1;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  reset () {
+    this.universe.clean_grid();
+  }
+
+  resetUniverse(width, height) {
+    this.width = width;
+    this.height = height;
+    this.universe = Universe.new(this.width, this.height);
+    this.resizeCanvas();
+  }
 }
