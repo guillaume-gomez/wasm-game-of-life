@@ -1,11 +1,11 @@
 import CustomCanvas from "./canvas";
+import fps from "./fps";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
 let animationId = null;
 
 let customCanvas = new CustomCanvas("game-of-life-canvas");
-console.log(customCanvas)
 const playPauseButton = document.getElementById("play-pause");
 const play = () => {
   playPauseButton.textContent = "⏸";
@@ -78,6 +78,7 @@ resetRandomButton.addEventListener("click", event => {
 })
 
 const renderLoop = () => {
+  //fps.render();
   customCanvas.getUniverse().tick();
   render();
 };
@@ -91,7 +92,6 @@ const render = () => {
 
 let canvas = customCanvas.getCanvas();
 canvas.addEventListener("click", event => {
-  console.log("pnus")
   const boundingRect = canvas.getBoundingClientRect();
 
   const scaleX = canvas.width / boundingRect.width;
