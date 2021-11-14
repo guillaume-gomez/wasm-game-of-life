@@ -91,7 +91,20 @@ const render = () => {
 }
 
 let canvas = customCanvas.getCanvas();
-canvas.addEventListener("click", event => {
+let isDrawing = false;
+
+canvas.addEventListener("mouseup" , _event => {
+  isDrawing = false;
+});
+
+canvas.addEventListener("mousedown", _event => {
+  isDrawing = true;
+})
+
+canvas.addEventListener("mousemove", event => {
+  if(!isDrawing) {
+    return;
+  }
   const boundingRect = canvas.getBoundingClientRect();
 
   const scaleX = canvas.width / boundingRect.width;
