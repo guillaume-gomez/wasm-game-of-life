@@ -101,10 +101,8 @@ canvas.addEventListener("mousedown", _event => {
   isDrawing = true;
 })
 
-canvas.addEventListener("mousemove", event => {
-  if(!isDrawing) {
-    return;
-  }
+
+function onDraw(event) {
   const boundingRect = canvas.getBoundingClientRect();
 
   const scaleX = canvas.width / boundingRect.width;
@@ -120,6 +118,17 @@ canvas.addEventListener("mousemove", event => {
 
   customCanvas.drawGrid();
   customCanvas.drawCells();
+}
+
+canvas.addEventListener("mousemove", event => {
+  if(!isDrawing) {
+    return;
+  }
+  onDraw(event);
 });
+
+canvas.addEventListener("click", event => {
+  onDraw(event);
+})
 
 render();
