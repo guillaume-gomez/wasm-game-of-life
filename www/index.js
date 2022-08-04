@@ -35,7 +35,7 @@ resetButton.addEventListener("click", event => {
   pause();
   customCanvas.reset();
   customCanvas.drawCells();
-})
+});
 
 const widthRange = document.getElementById("width-range");
 widthRange.addEventListener("change", event => {
@@ -45,7 +45,7 @@ widthRange.addEventListener("change", event => {
   pause();
   customCanvas.resetUniverse(event.target.value, customCanvas.getHeight());
   customCanvas.drawCells();
-})
+});
 
 const heightRange = document.getElementById("height-range");
 heightRange.addEventListener("change", event => {
@@ -55,7 +55,7 @@ heightRange.addEventListener("change", event => {
   pause();
   customCanvas.resetUniverse(customCanvas.getWidth(), event.target.value);
   customCanvas.drawCells();
-})
+});
 
 const cellSizeRange = document.getElementById("cell-size-range");
 cellSizeRange.addEventListener("change", event => {
@@ -66,7 +66,7 @@ cellSizeRange.addEventListener("change", event => {
   customCanvas.setCellSize(parseInt(event.target.value));
   customCanvas.resizeCanvas();
   customCanvas.drawCells();
-})
+});
 
 const resetRandomButton = document.getElementById("reset-random");
 resetRandomButton.addEventListener("click", event => {
@@ -75,7 +75,12 @@ resetRandomButton.addEventListener("click", event => {
   const height = customCanvas.getHeight();
   customCanvas.resetUniverse(width, height);
   customCanvas.drawCells();
-})
+});
+
+const fullscreenButton = document.getElementById("fullscreen");
+fullscreenButton.addEventListener("click", event => {
+  fullscreen();
+});
 
 const renderLoop = () => {
   //fps.render();
@@ -120,6 +125,28 @@ function onDraw(event) {
   customCanvas.drawCells();
 }
 
+function fullscreen() {
+  const fullscreenElement = document.fullscreenElement;
+  if(!canvas) {
+      return;
+  }
+
+  if(!fullscreenElement)
+  {
+      if(canvas.requestFullscreen)
+      {
+        canvas.requestFullscreen()
+      }
+  }
+  else
+  {
+      if(document.exitFullscreen)
+      {
+        document.exitFullscreen()
+      }
+  }
+}
+
 canvas.addEventListener("mousemove", event => {
   if(!isDrawing) {
     return;
@@ -131,4 +158,7 @@ canvas.addEventListener("click", event => {
   onDraw(event);
 })
 
+canvas.addEventListener("dblclick", event => {
+  fullscreen();
+});
 render();
