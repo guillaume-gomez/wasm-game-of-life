@@ -37,6 +37,12 @@ resetButton.addEventListener("click", event => {
   customCanvas.drawCells();
 });
 
+const toggleBackgroundMode = document.getElementById('background-mode');
+toggleBackgroundMode.addEventListener("click", event => {
+  customCanvas.setDarkBackground(event.target.checked);
+  customCanvas.drawCells();
+});
+
 const widthRange = document.getElementById("width-range");
 widthRange.addEventListener("change", event => {
   const span = document.getElementById("width-value");

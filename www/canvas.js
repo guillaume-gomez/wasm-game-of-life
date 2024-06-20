@@ -1,9 +1,10 @@
 import { Universe, Cell } from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
+const BACKGROUND_GRID = "#FFFFFF";
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
-const ALIVE_COLOR = "#000000";
+const ALIVE_COLOR = "#22222";
 
 const COLORS = [ALIVE_COLOR, "#2094f3", "#009485", "#ff9900", "#ff5724", "#4506cb" ]
 
@@ -19,7 +20,27 @@ export default class CustomCanvas {
     this.height = 64;
     this.universe = Universe.new(this.width, this.height);
 
+    this.darkBackground = false;
+    this.deadColor = DEAD_COLOR;
+    this.gridColor = GRID_COLOR;
+
     this.resizeCanvas();
+  }
+
+  isDarkBackground() {
+    return this.darkBackground;
+  }
+
+  setDarkBackground(value) {
+    this.darkBackground = value;
+
+    if(value === true) {
+      this.deadColor = "#2a2e37";
+      this.gridColor =  "#000000"
+    } else {
+      this.deadColor = "#FFFFFF";
+      this.gridColor = GRID_COLOR;
+    }
   }
 
   getUniverse() {
@@ -57,7 +78,7 @@ export default class CustomCanvas {
 
   drawGrid() {
     this.ctx.beginPath();
-    this.ctx.strokeStyle = GRID_COLOR;
+    this.ctx.strokeStyle = this.gridColor;
 
     const width = this.width;
     const height = this.height;
@@ -99,7 +120,7 @@ export default class CustomCanvas {
     }
 
     // Dead cells.
-    this.ctx.fillStyle = DEAD_COLOR;
+    this.ctx.fillStyle = this.deadColor;
     for (let row = 0; row < this.height; row++) {
       for (let col = 0; col < this.width; col++) {
         const idx = this.getIndex(row, col);
