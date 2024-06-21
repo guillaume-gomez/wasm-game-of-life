@@ -4,11 +4,18 @@ import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
 let animationId = null;
+let fpsChosen = 60;
+let fpsInterval, now, then, elapsed, startTime;
 
 let customCanvas = new CustomCanvas("game-of-life-canvas");
 const playPauseButton = document.getElementById("play-pause");
 const play = () => {
   playPauseButton.textContent = "⏸";
+
+  fpsInterval = 1000 / fpsChosen;
+  then = Date.now();
+  startTime = then;
+
   renderLoop();
 };
 
@@ -88,6 +95,18 @@ fullscreenButton.addEventListener("click", event => {
   fullscreen();
 });
 
+const fpsRange = document.getElementById("fps-range");
+fpsRange.addEventListener("change", event => {
+  const span = document.getElementById("fps-range-value");
+  span.innerText = event.target.value;
+
+  fpsChosen = parseInt(event.target.value, 10);
+
+  pause();
+  play();
+});
+
+
 const renderLoop = () => {
   //fps.render();
   customCanvas.getUniverse().tick();
@@ -95,10 +114,23 @@ const renderLoop = () => {
 };
 
 const render = () => {
-  customCanvas.drawGrid();
-  customCanvas.drawCells();
 
   animationId = requestAnimationFrame(renderLoop);
+
+  // calc elapsed time since last loop
+  now = Date.now();
+  elapsed = now - then;
+
+  // if enough time has elapsed, draw the next frame
+
+  if (elapsed > fpsInterval) {
+    // Get ready for next frame by setting then=now, but also adjust for your
+    // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+    then = now - (elapsed % fpsInterval);
+    // Put your drawing code here
+    customCanvas.drawGrid();
+    customCanvas.drawCells();
+  }
 }
 
 let canvas = customCanvas.getCanvas();
