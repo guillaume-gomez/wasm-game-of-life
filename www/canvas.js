@@ -1,5 +1,5 @@
 import { Universe, Cell } from "wasm-game-of-life";
-import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
+import { memory } from "wasm-game-of-life/wasm_game_of_life_bg.wasm";
 
 const BACKGROUND_GRID = "#FFFFFF";
 const GRID_COLOR = "#CCCCCC";
@@ -77,7 +77,7 @@ export default class CustomCanvas {
   }
 
   drawGrid() {
-    this.ctx.beginPath();
+    this.ctx.beginPath();64
     this.ctx.strokeStyle = this.gridColor;
 
     const width = this.width;
@@ -99,7 +99,10 @@ export default class CustomCanvas {
 
   drawCells() { 
     const cellsPtr = this.universe.cells();
+    //console.log(cellsPtr)
+    //console.log(memory.buffer)
     const cells = new Uint8Array(memory.buffer, cellsPtr, this.width * this.height);
+    console.log(cells)
 
     this.ctx.beginPath();
     for (let row = 0; row < this.height; row++) {

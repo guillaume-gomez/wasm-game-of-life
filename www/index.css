@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#fps {
+  white-space: pre;
+  font-family: monospace;
+}
