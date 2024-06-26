@@ -77,7 +77,7 @@ export default class CustomCanvas {
   }
 
   drawGrid() {
-    this.ctx.beginPath();64
+    this.ctx.beginPath();
     this.ctx.strokeStyle = this.gridColor;
 
     const width = this.width;
@@ -99,10 +99,7 @@ export default class CustomCanvas {
 
   drawCells() { 
     const cellsPtr = this.universe.cells();
-    //console.log(cellsPtr)
-    //console.log(memory.buffer)
     const cells = new Uint8Array(memory.buffer, cellsPtr, this.width * this.height);
-    console.log(cells)
 
     this.ctx.beginPath();
     for (let row = 0; row < this.height; row++) {
