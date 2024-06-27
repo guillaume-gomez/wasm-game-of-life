@@ -1,6 +1,5 @@
 import CustomCanvas from "./canvas";
 import fps from "./fps";
-import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 
 let animationId = null;

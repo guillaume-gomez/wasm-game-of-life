@@ -7,10 +7,12 @@
 ```
 wasm-pack build
 cd www
-npm run start
+yarn build
+yarn preview
 ```
 
-yarn does not work here :(
+:danger: for now, using `yarn dev` does not work yet
+
 
 
 ## About
