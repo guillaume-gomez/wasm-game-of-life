@@ -11,7 +11,7 @@ yarn build
 yarn preview
 ```
 
-:danger: for now, using `yarn dev` does not work yet
+⚠️ for now, using `yarn dev` does not work yet
 
 
 
